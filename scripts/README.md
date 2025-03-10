@@ -20,9 +20,10 @@ Creates a new vector store and adds files from `uploaded_files.json` to it.
 
 This script will:
 1. Read the file IDs from `uploaded_files.json`
-2. Create a new vector store named "english_documents_store"
+2. Create a new vector store named "verkada_english_chunks_store"
 3. Add all the files to the vector store in batches
 4. Print the vector store ID upon completion
+5. Save the vector store information to `vector_store_info.json` for future reference
 
 ### 2. Query Vector Store
 
@@ -53,9 +54,9 @@ Lists all vector stores in your account with their details.
 This script will display:
 - Vector store IDs
 - Names
-- Descriptions
 - Creation dates
-- File counts
+- Size in bytes
+- File counts (total, completed, in progress, failed, cancelled)
 
 ## Example Workflow
 
@@ -64,7 +65,7 @@ This script will display:
    ./create_vector_store.py
    ```
 
-2. Note the vector store ID from the output (e.g., `vs_abc123`)
+2. Note the vector store ID from the output (e.g., `vs_abc123`) or check the `vector_store_info.json` file
 
 3. Query the vector store:
    ```bash

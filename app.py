@@ -74,12 +74,26 @@ def list_vector_stores():
         # Format the response
         stores_list = []
         for store in vector_stores.data:
-            stores_list.append({
+            store_data = {
                 "id": store.id,
                 "name": store.name,
-                "description": store.description,
                 "created_at": store.created_at
-            })
+            }
+            
+            # Add additional fields if they exist
+            if hasattr(store, 'bytes'):
+                store_data["bytes"] = store.bytes
+                
+            if hasattr(store, 'file_counts'):
+                store_data["file_counts"] = {
+                    "in_progress": store.file_counts.in_progress,
+                    "completed": store.file_counts.completed,
+                    "failed": store.file_counts.failed,
+                    "cancelled": store.file_counts.cancelled,
+                    "total": store.file_counts.total
+                }
+                
+            stores_list.append(store_data)
         
         return jsonify({
             "vector_stores": stores_list,

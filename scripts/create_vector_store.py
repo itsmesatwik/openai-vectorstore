@@ -16,12 +16,11 @@ def load_uploaded_files():
     with open("uploaded_files.json", "r") as f:
         return json.load(f)
 
-def create_vector_store(name, description):
+def create_vector_store(name):
     """Create a new vector store."""
     try:
         response = client.beta.vector_stores.create(
-            name=name,
-            description=description
+            name=name
         )
         print(f"Vector store created: {response.id}")
         return response.id
@@ -64,15 +63,37 @@ def main():
     print(f"Found {len(file_ids)} files to add to the vector store.")
     
     # Create a vector store
-    vector_store_name = "english_documents_store"
-    vector_store_description = "Vector store containing English document chunks"
+    vector_store_name = "verkada_english_chunks_store"
     
-    vector_store_id = create_vector_store(vector_store_name, vector_store_description)
+    vector_store_id = create_vector_store(vector_store_name)
     
     if vector_store_id:
         # Add files to the vector store
         add_files_to_vector_store(vector_store_id, file_ids)
         print(f"Vector store creation complete. Vector Store ID: {vector_store_id}")
+        
+        # Save the vector store ID to a file for future reference
+        store_info = {"vector_store_id": vector_store_id, "name": vector_store_name}
+        
+        # Try to get additional details about the vector store
+        try:
+            details = client.beta.vector_stores.retrieve(vector_store_id=vector_store_id)
+            if hasattr(details, 'bytes'):
+                store_info["bytes"] = details.bytes
+            if hasattr(details, 'file_counts'):
+                store_info["file_counts"] = {
+                    "total": details.file_counts.total,
+                    "completed": details.file_counts.completed,
+                    "in_progress": details.file_counts.in_progress,
+                    "failed": details.file_counts.failed,
+                    "cancelled": details.file_counts.cancelled
+                }
+        except Exception as e:
+            print(f"Warning: Could not retrieve additional details: {e}")
+        
+        with open("vector_store_info.json", "w") as f:
+            json.dump(store_info, f, indent=2)
+        print(f"Vector store info saved to vector_store_info.json")
     else:
         print("Failed to create vector store.")
 

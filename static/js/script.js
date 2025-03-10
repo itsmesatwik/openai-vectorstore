@@ -185,7 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             
             if (response.ok) {
-                addMessage(data.response, 'assistant');
+                // Sanitize and format the response before displaying it
+                const sanitizedResponse = sanitizeMarkdown(data.response);
+                addMessage(sanitizedResponse, 'assistant');
             } else {
                 addErrorMessage(data.error || 'Failed to get response');
             }
@@ -197,6 +199,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    // Sanitize and format markdown content
+    function sanitizeMarkdown(content) {
+        if (!content) return '';
+        
+        // Replace source references like 【4:0†source】 with proper markdown links
+        content = content.replace(/【(\d+):(\d+)†source】/g, '[[Source $1:$2]](#)');
+        
+        // Ensure headers have spaces after the # symbols
+        content = content.replace(/###(?=[^\s])/g, '### ');
+        content = content.replace(/##(?=[^\s])/g, '## ');
+        content = content.replace(/#(?=[^\s])/g, '# ');
+        
+        // Fix bullet points that might not have proper spacing
+        content = content.replace(/\n-(?=[^\s])/g, '\n- ');
+        
+        // Add line breaks before headers for better formatting
+        content = content.replace(/([^\n])(\n#{1,6}\s)/g, '$1\n\n$2');
+        
+        return content;
+    }
+    
     // Add a message to the chat
     function addMessage(content, role) {
         const messageDiv = document.createElement('div');
@@ -204,7 +227,22 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const messageContent = document.createElement('div');
         messageContent.className = 'message-content';
-        messageContent.textContent = content;
+        
+        // Use marked.js to render markdown if it's an assistant message
+        if (role === 'assistant') {
+            // Set innerHTML with the parsed markdown
+            messageContent.innerHTML = marked.parse(content);
+            
+            // Make links open in a new tab
+            const links = messageContent.querySelectorAll('a');
+            links.forEach(link => {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            });
+        } else {
+            // For user messages, just use text content
+            messageContent.textContent = content;
+        }
         
         messageDiv.appendChild(messageContent);
         chatMessages.appendChild(messageDiv);

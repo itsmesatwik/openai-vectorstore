@@ -39,7 +39,6 @@ try:
     file_ids = [file["file_id"] for file in uploaded_files]
     vector_store = client.beta.vector_stores.create(
         name="english_chunks_store",
-        description="Vector store for English chunks",
         file_ids=file_ids
     )
     print(f"Successfully created vector store with ID: {vector_store.id}")

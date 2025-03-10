@@ -79,3 +79,4 @@ english_chunks/
 uploaded_files.json
 failed_uploads.json
 vector_store_info.json
+assistant_info.json

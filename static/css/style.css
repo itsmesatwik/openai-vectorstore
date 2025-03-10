@@ -92,40 +92,99 @@ body {
 }
 
 .message {
+    margin-bottom: 15px;
     display: flex;
-    max-width: 80%;
+    flex-direction: column;
 }
 
 .message.user {
-    align-self: flex-end;
+    align-items: flex-end;
 }
 
-.message.assistant, .message.system {
-    align-self: flex-start;
+.message.assistant {
+    align-items: flex-start;
 }
 
 .message-content {
-    padding: 12px 16px;
+    padding: 10px 15px;
     border-radius: 18px;
-    line-height: 1.5;
+    max-width: 80%;
+    word-wrap: break-word;
 }
 
-.message.user .message-content {
-    background-color: #0084ff;
-    color: white;
-    border-bottom-right-radius: 4px;
-}
-
+/* Markdown styling for assistant messages */
 .message.assistant .message-content {
     background-color: #f0f0f0;
     color: #333;
-    border-bottom-left-radius: 4px;
 }
 
-.message.system .message-content {
-    background-color: #f8f8f8;
-    color: #666;
-    border: 1px solid #eee;
+.message.assistant .message-content h1,
+.message.assistant .message-content h2,
+.message.assistant .message-content h3,
+.message.assistant .message-content h4,
+.message.assistant .message-content h5,
+.message.assistant .message-content h6 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    color: #222;
+}
+
+.message.assistant .message-content h3 {
+    font-size: 1.2em;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.3em;
+}
+
+.message.assistant .message-content ul,
+.message.assistant .message-content ol {
+    padding-left: 1.5em;
+    margin: 0.5em 0;
+}
+
+.message.assistant .message-content li {
+    margin: 0.3em 0;
+}
+
+.message.assistant .message-content p {
+    margin: 0.5em 0;
+}
+
+.message.assistant .message-content code {
+    background-color: #e8e8e8;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.message.assistant .message-content pre {
+    background-color: #e8e8e8;
+    padding: 1em;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 0.5em 0;
+}
+
+.message.assistant .message-content blockquote {
+    border-left: 3px solid #ccc;
+    padding-left: 1em;
+    margin: 0.5em 0;
+    color: #555;
+}
+
+.message.assistant .message-content a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.message.assistant .message-content a:hover {
+    text-decoration: underline;
+}
+
+.message.user .message-content {
+    background-color: #007bff;
+    color: white;
 }
 
 .chat-input {

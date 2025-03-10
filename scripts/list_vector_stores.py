@@ -39,13 +39,18 @@ def display_vector_stores(vector_stores):
         print(f"Vector Store {i}:")
         print(f"  ID: {store.id}")
         print(f"  Name: {store.name}")
-        print(f"  Description: {store.description}")
         print(f"  Created at: {store.created_at}")
         
-        # Get more details for this vector store
-        details = get_vector_store_details(store.id)
-        if details and hasattr(details, 'file_count'):
-            print(f"  File count: {details.file_count}")
+        if hasattr(store, 'bytes'):
+            print(f"  Size: {store.bytes} bytes")
+        
+        if hasattr(store, 'file_counts'):
+            print(f"  Files:")
+            print(f"    Total: {store.file_counts.total}")
+            print(f"    Completed: {store.file_counts.completed}")
+            print(f"    In progress: {store.file_counts.in_progress}")
+            print(f"    Failed: {store.file_counts.failed}")
+            print(f"    Cancelled: {store.file_counts.cancelled}")
         
         print("-" * 80)
 
