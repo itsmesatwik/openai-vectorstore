@@ -2,6 +2,9 @@
 
 This is a simple web application that allows you to interact with an OpenAI Assistant that has access to your uploaded documents through a vector store.
 
+<img width="770" alt="image" src="https://github.com/user-attachments/assets/50f7f887-0c15-48d0-af84-2711fa27a9b2" />
+
+
 ## Prerequisites
 
 - Python 3.8 or higher
