@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Assistant</title>
+    <title>OpenAI Vector Store Assistant</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
+    <div class="app-container">
+        <div class="app-header">
             <h1>OpenAI Vector Store Assistant</h1>
-            <p>Ask questions about your documents</p>
             <div class="vector-store-selector">
                 <label for="vector-store-select">Vector Store:</label>
                 <select id="vector-store-select" disabled>
@@ -21,23 +20,61 @@
             </div>
         </div>
         
-        <div class="chat-messages" id="chat-messages">
-            <div class="message system">
-                <div class="message-content">
-                    Welcome! I'm your document assistant. I can answer questions based on the documents you've uploaded. How can I help you today?
-                </div>
-            </div>
+        <div class="tabs">
+            <button class="tab-button active" data-tab="chat">Chat</button>
+            <button class="tab-button" data-tab="search">Search</button>
         </div>
         
-        <div class="chat-input">
-            <textarea id="user-input" placeholder="Type your message here..." rows="3"></textarea>
-            <button id="send-button">Send</button>
+        <div class="tab-content">
+            <!-- Chat Tab -->
+            <div class="tab-pane active" id="chat-tab">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message system">
+                        <div class="message-content">
+                            Welcome! I'm your document assistant. I can answer questions based on the documents you've uploaded. How can I help you today?
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <textarea id="user-input" placeholder="Type your message here..." rows="3"></textarea>
+                    <button id="send-button">Send</button>
+                </div>
+            </div>
+            
+            <!-- Search Tab -->
+            <div class="tab-pane" id="search-tab">
+                <div class="search-container">
+                    <div class="search-form">
+                        <input type="text" id="search-query" placeholder="Enter your search query...">
+                        <div class="search-options">
+                            <div class="search-option">
+                                <label for="max-results">Max Results:</label>
+                                <input type="number" id="max-results" min="1" max="50" value="10">
+                            </div>
+                            <div class="search-option">
+                                <label>
+                                    <input type="checkbox" id="rewrite-query">
+                                    Rewrite Query
+                                </label>
+                            </div>
+                        </div>
+                        <button id="search-button">Search</button>
+                    </div>
+                    
+                    <div class="search-results" id="search-results">
+                        <div class="search-placeholder">
+                            Enter a search query to find relevant documents
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="loading-indicator" id="loading">
         <div class="spinner"></div>
-        <p>Thinking...</p>
+        <p>Processing...</p>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

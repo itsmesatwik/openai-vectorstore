@@ -215,5 +215,65 @@ def send_message():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/search-vector-store', methods=['POST'])
+def search_vector_store():
+    """API endpoint to search the vector store."""
+    global vector_store_id
+    
+    if not vector_store_id:
+        return jsonify({"error": "Vector store ID not found"}), 400
+    
+    data = request.json
+    query = data.get('query')
+    max_results = data.get('max_results', 10)
+    rewrite_query = data.get('rewrite_query', False)
+    
+    if not query:
+        return jsonify({"error": "Query is required"}), 400
+    
+    try:
+        # Import the search function directly from the scripts directory
+        import os
+        import sys
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scripts')
+        sys.path.insert(0, script_path)
+        from search_vector_store import search_vector_store as search_vs
+        
+        # Ensure max_results is within valid range
+        max_results = min(max(1, max_results), 50)
+        
+        # Set up ranking options if needed
+        ranking_options = None
+        
+        # Perform the search using the imported function
+        results = search_vs(
+            vector_store_id, 
+            query, 
+            max_results=max_results,
+            filters=None,
+            rewrite_query=rewrite_query,
+            ranking_options=ranking_options
+        )
+        
+        if not results:
+            return jsonify({"error": "Search failed or returned no results"}), 500
+        
+        # Process the results to ensure they're in a consistent format
+        # The search_vector_store.py function returns a dictionary with data array
+        if isinstance(results, dict) and 'data' in results:
+            # Already in the expected format
+            return jsonify(results)
+        else:
+            # Format the results to match the expected structure
+            formatted_results = {
+                "search_query": query,
+                "data": results if isinstance(results, list) else []
+            }
+            return jsonify(formatted_results)
+    
+    except Exception as e:
+        print(f"Error searching vector store: {e}")
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True) 
